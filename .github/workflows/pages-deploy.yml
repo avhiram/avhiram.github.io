@@ -47,6 +47,17 @@ jobs:
           
           
           
+      - name: Isolate SKILL-ISSUE from the root Service Worker
+        env:
+          SITE_DIR: "_site${{ steps.pages.outputs.base_path }}"
+        run: |
+          worker="$SITE_DIR/sw.min.js"
+          test -s "$worker"
+          grep -Fq '/skill-issue' "$SITE_DIR/assets/js/data/swconf.js"
+          cat tools/skill-issue-sw-guard.js "$worker" > "$worker.tmp"
+          mv "$worker.tmp" "$worker"
+          node --check "$worker"
+
       - name: Test site
         run: |
           bundle exec htmlproofer _site \
@@ -68,3 +79,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Verify published Service Worker isolation
+        run: |
+          for attempt in $(seq 1 12); do
+            if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/sw.min.js?revision=${GITHUB_SHA}" -o /tmp/published-sw.js && grep -Fq 'skillIssueCacheIsolation' /tmp/published-sw.js; then
+              echo 'Published root Service Worker includes SKILL-ISSUE cache isolation.'
+              exit 0
+            fi
+            sleep 10
+          done
+          echo '::error::Published root Service Worker isolation not verified.'
+          exit 1
