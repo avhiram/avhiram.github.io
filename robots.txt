@@ -1,0 +1,10 @@
+# Request exclusion of the SKILL-ISSUE project from archive crawlers.
+# This is advisory; contact Internet Archive for explicit exclusion.
+User-agent: ia_archiver
+User-agent: ia_archiver-web.archive.org
+User-agent: archive.org_bot
+Disallow: /skill-issue/
+Disallow: /skill-issue$
+
+User-agent: *
+Disallow:
