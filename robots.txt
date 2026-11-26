@@ -1,0 +1,24 @@
+# SKILL-ISSUE: allow conventional search indexing only.
+User-agent: Googlebot
+User-agent: Bingbot
+Allow: /skill-issue/
+Disallow: /
+
+# Explicit exclusion requests for archiving and AI collection.
+User-agent: ia_archiver
+User-agent: archive.org_bot
+User-agent: CCBot
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: OAI-SearchBot
+User-agent: Claude-SearchBot
+User-agent: PerplexityBot
+User-agent: Bytespider
+User-agent: meta-externalagent
+Disallow: /
+
+# Deny all remaining automated crawlers that respect robots.txt.
+User-agent: *
+Disallow: /
